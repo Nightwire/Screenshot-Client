@@ -12,16 +12,12 @@ $path = $env:LocalAppData + "\Niklas_Mollenhauer\"
 $apikey = Read-Host("Bitte API Key eingeben")
 $pluginPath = $env:AppData + "\HolzShots\Plugin\"
 $ShortcutPath = ($env:AppData + "\Microsoft\Windows\Start Menu\Programs\Startup\HolzShots.lnk")
-$HolzShotsBinPath = $HZPath + "\Holzshots.exe"
-
-#Close any Holzshots Binarys
-Write-Host("Beende jegliche Holzshots Versionen")
-try{ kill -processname "HolzShots" -Force } catch{}
 
 #Prepare Directorys
 Write-Host("Erstelle HolzShots Programm Ordner")
 Remove-Item ($env:LocalAppData + "\HolzShots") -recurse
 $HZPath = (New-Item -ItemType Directory -Force -Path ($env:LocalAppData + "\HolzShots")).FullName
+$HolzShotsBinPath = $HZPath + "\Holzshots.exe"
 
 Write-Host("Erstelle HolzShots Plugin Ordner")
 Remove-Item $pluginPath -recurse
@@ -88,7 +84,7 @@ Get-ChildItem $path | ForEach-Object{
     $url = "https://gitlab.com/nightwire/NWDE-Holzshots/raw/master/user.config"
     Invoke-WebRequest -Uri $url -OutFile $configPath
 	(Get-Content $configPath) | 
-	Foreach-Object {$_ -replace '\[INSERTAPIKEYHERE\]',$apikey}  | 
+	Foreach-Object {$_ -replace 'INSERTAPIKEYHERE',$apikey}  | 
 	Out-File $configPath -Encoding utf8
     Write-Host("HolzShots Config erfolgreich unter $configPath gespeichert")
     
