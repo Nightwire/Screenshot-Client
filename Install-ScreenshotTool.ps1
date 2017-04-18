@@ -9,7 +9,12 @@
 }
 
 $path = $env:LocalAppData + "\Niklas_Mollenhauer\"
-$apikey = Read-Host("Bitte API Key eingeben")
+$apikey = Read-Host("Bitte API Key eingeben oder mit Enter bestätigen um den Inhalt der Zwischenablage zu nutzen")
+if ($apikey -and $apikey -eq "")
+{
+	$apikey = Get-Clipboard
+}
+
 $pluginPath = $env:AppData + "\HolzShots\Plugin\"
 $ShortcutPath = ($env:AppData + "\Microsoft\Windows\Start Menu\Programs\Startup\HolzShots.lnk")
 
