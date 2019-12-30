@@ -1,4 +1,6 @@
-﻿function Expand-ZIPFile($file, $destination)
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+function Expand-ZIPFile($file, $destination)
 {
     $shell = new-object -com shell.application
     $zip = $shell.NameSpace($file)
