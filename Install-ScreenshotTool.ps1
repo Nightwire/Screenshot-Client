@@ -36,7 +36,7 @@ New-Item -ItemType Directory -Force -Path $path
 
 #Download Holzshots
 Write-Host("Lade HolzShots herunter..")
-$url = "https://gitlab.com/nightwire/NWDE-Holzshots/raw/master/HolzShots.zip"
+$url = "https://github.com/Nightwire/Screenshot-Client/blob/master/HolzShots.zip"
 $output = "$HZPath\HolzShots.zip"
 
 Invoke-WebRequest -Uri $url -OutFile $output
@@ -89,7 +89,7 @@ Get-ChildItem $path | ForEach-Object {
     $configPath = $ConfigFolder.FullName + "\user.config"
 
     Write-Host("Lade HolzShots Config herunter..")
-    $url = "https://gitlab.com/nightwire/NWDE-Holzshots/raw/master/user.config"
+    $url = "https://github.com/Nightwire/Screenshot-Client/blob/master/user.config"
     Invoke-WebRequest -Uri $url -OutFile $configPath
     (Get-Content $configPath) | 
     Foreach-Object { $_ -replace 'INSERTAPIKEYHERE', $apikey } | 
