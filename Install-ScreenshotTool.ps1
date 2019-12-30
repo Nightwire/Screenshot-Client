@@ -1,24 +1,24 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-function Expand-ZIPFile($file, $destination)
-{
+function Expand-ZIPFile($file, $destination) {
     $shell = new-object -com shell.application
     $zip = $shell.NameSpace($file)
-    foreach($item in $zip.items())
-    {
+    foreach ($item in $zip.items()) {
         $shell.Namespace($destination).copyhere($item)
     }
 }
 
 $path = $env:LocalAppData + "\Niklas_Mollenhauer\"
 $apikey = Read-Host("Bitte API Key eingeben oder mit Enter bestätigen um den Inhalt der Zwischenablage zu nutzen")
-if ($apikey -and $apikey -eq "")
-{
-	$apikey = Get-Clipboard
+if ($apikey -and $apikey -eq "") {
+    $apikey = Get-Clipboard
 }
 
 $pluginPath = $env:AppData + "\HolzShots\Plugin\"
 $ShortcutPath = ($env:AppData + "\Microsoft\Windows\Start Menu\Programs\Startup\HolzShots.lnk")
+
+#Stop Holzshots
+Get-Process -Name "HolzShots" | Stop-Process -Confirm:$false -Force
 
 #Prepare Directorys
 Write-Host("Erstelle HolzShots Programm Ordner")
@@ -36,7 +36,7 @@ New-Item -ItemType Directory -Force -Path $path
 
 #Download Holzshots
 Write-Host("Lade HolzShots herunter..")
-$url = "https://gitlab.com/nightwire/NWDE-Holzshots/raw/49e3085b851b63c5c9cf3b5d85c692ffda79157d/HolzShots.zip"
+$url = "https://gitlab.com/nightwire/NWDE-Holzshots/raw/master/HolzShots.zip"
 $output = "$HZPath\HolzShots.zip"
 
 Invoke-WebRequest -Uri $url -OutFile $output
@@ -51,8 +51,8 @@ Remove-Item -Force $output
 
 #Add Holzshots to autostart
 Write-Host("Füge Holzshots zum Autostart hinzu..")
-If (Test-Path $ShortcutPath){
-	Remove-Item $ShortcutPath
+If (Test-Path $ShortcutPath) {
+    Remove-Item $ShortcutPath
 }
 $wshshell = New-Object -comObject WScript.Shell
 $link = $wshshell.CreateShortcut($ShortcutPath)
@@ -75,12 +75,13 @@ Start-Sleep -Seconds 10
 try {            
     Stop-Process -Id $id -ErrorAction stop            
     Write-Host "Erfolgreich Holzshots mit der ID: $id gestoppt."            
-} catch {            
+}
+catch {            
     Write-Host "FEHLER: Bitte Holzshots manuell neustarten."            
 }
 
 #Add Config
-Get-ChildItem $path | ForEach-Object{
+Get-ChildItem $path | ForEach-Object {
 
     Remove-Item $_.FullName -recurse     
     $ConfigFolder = New-Item -ItemType directory -Path ($_.FullName + "\" + "0.9.8.12")
@@ -90,9 +91,9 @@ Get-ChildItem $path | ForEach-Object{
     Write-Host("Lade HolzShots Config herunter..")
     $url = "https://gitlab.com/nightwire/NWDE-Holzshots/raw/master/user.config"
     Invoke-WebRequest -Uri $url -OutFile $configPath
-	(Get-Content $configPath) | 
-	Foreach-Object {$_ -replace 'INSERTAPIKEYHERE',$apikey}  | 
-	Out-File $configPath -Encoding utf8
+    (Get-Content $configPath) | 
+    Foreach-Object { $_ -replace 'INSERTAPIKEYHERE', $apikey } | 
+    Out-File $configPath -Encoding utf8
     Write-Host("HolzShots Config erfolgreich unter $configPath gespeichert")
     
 }
